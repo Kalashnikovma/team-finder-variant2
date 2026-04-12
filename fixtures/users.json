@@ -1,0 +1,65 @@
+[
+  {
+    "model": "users.user",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$abc123$xyz789hashedpassword123example==",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "alice@test.com",
+      "email": "alice@test.com",
+      "name": "Алиса",
+      "surname": "Петрова",
+      "about": "Fullstack-разработчик. Люблю Python и React.",
+      "phone": "+7 (999) 111-22-33",
+      "github_url": "https://github.com/alice-dev",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 11,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$abc123$xyz789hashedpassword123example==",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "bob@test.com",
+      "email": "bob@test.com",
+      "name": "Боб",
+      "surname": "Сидоров",
+      "about": "DevOps-инженер. Автоматизирую всё, что можно.",
+      "phone": "+7 (999) 444-55-66",
+      "github_url": "https://github.com/bob-ops",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-01-02T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 12,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$abc123$xyz789hashedpassword123example==",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "carol@test.com",
+      "email": "carol@test.com",
+      "name": "Кэрол",
+      "surname": "Иванова",
+      "about": "UX/UI-дизайнер. Делаю интерфейсы удобными и красивыми.",
+      "phone": "+7 (999) 777-88-99",
+      "github_url": "https://github.com/carol-design",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-01-03T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
