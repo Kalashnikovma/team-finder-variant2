@@ -35,9 +35,9 @@
         </div>
     {% endif %}
 
-    {% if participants %}
+    {% if page_obj %}
     <div class="participants-grid">
-        {% for participant in participants %}
+        {% for participant in page_obj %}
         <div class="participant-card">
             <div class="participant-card-header">
                 {% if participant.avatar %}
@@ -56,7 +56,24 @@
                 </a>
             </div>
         </div>
+        {% empty %}
+            <p>Пока нет пользователей</p>
         {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if active_skill %}&skill={{ active_skill }}{% endif %}" class="black-button">Первая</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if active_skill %}&skill={{ active_skill }}{% endif %}" class="black-button">Назад</a>
+        {% endif %}
+
+        <span class="page-info">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if active_skill %}&skill={{ active_skill }}{% endif %}" class="black-button">Вперед</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if active_skill %}&skill={{ active_skill }}{% endif %}" class="black-button">Последняя</a>
+        {% endif %}
     </div>
     {% else %}
     {% include 'includes/empty_project_card.html' with empty_title="Пока нет участников" empty_message="Попробуйте сбросить фильтр" button_link="/users/list" button_text="Сбросить" %}

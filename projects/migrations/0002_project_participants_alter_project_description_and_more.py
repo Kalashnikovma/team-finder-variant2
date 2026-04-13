@@ -7,34 +7,46 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0001_initial'),
+        ("projects", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='project',
-            name='participants',
-            field=models.ManyToManyField(blank=True, related_name='participating_projects', to=settings.AUTH_USER_MODEL),
+            model_name="project",
+            name="participants",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="participating_projects",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='description',
+            model_name="project",
+            name="description",
             field=models.TextField(),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='github_url',
+            model_name="project",
+            name="github_url",
             field=models.URLField(blank=True),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='name',
+            model_name="project",
+            name="name",
             field=models.CharField(max_length=200),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='status',
-            field=models.CharField(choices=[('open', 'Открыт'), ('closed', 'Закрыт'), ('in_progress', 'В процессе')], default='open', max_length=20),
+            model_name="project",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("open", "Открыт"),
+                    ("closed", "Закрыт"),
+                    ("in_progress", "В процессе"),
+                ],
+                default="open",
+                max_length=20,
+            ),
         ),
     ]

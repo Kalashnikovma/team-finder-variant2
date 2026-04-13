@@ -6,9 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # TODO: Создать и заполнить .env, ориентируясь на .env_example
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
+DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = []
 
@@ -22,8 +22,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'users',
-    'projects',
+    "users",
+    "projects",
 ]
 
 MIDDLEWARE = [
@@ -34,7 +34,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
 ]
 
 ROOT_URLCONF = "team_finder.urls"
@@ -61,13 +61,13 @@ WSGI_APPLICATION = "team_finder.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'teamfinder'),
-        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB", "teamfinder"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
+        "HOST": os.environ.get("POSTGRES_HOST", "db"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 
@@ -121,4 +121,4 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"

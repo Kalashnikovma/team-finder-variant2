@@ -3,38 +3,41 @@ from django.db import models
 
 
 class User(AbstractUser):
-    avatar = models.ImageField('Аватар', upload_to='users/avatars/', blank=True, null=True)
+    avatar = models.ImageField(
+        "Аватар", upload_to="users/avatars/", blank=True, null=True
+    )
 
-    name = models.CharField('Имя', max_length=150, blank=True, default='')
-    surname = models.CharField('Фамилия', max_length=150, blank=True, default='')
-    about = models.TextField('О себе', blank=True, default='')
-    phone = models.CharField('Телефон', max_length=20, blank=True, default='')
-    github_url = models.URLField('GitHub', blank=True, default='')
-    
+    name = models.CharField("Имя", max_length=150, blank=True, default="")
+    surname = models.CharField("Фамилия", max_length=150, blank=True, default="")
+    about = models.TextField("О себе", blank=True, default="")
+    phone = models.CharField("Телефон", max_length=20, blank=True, default="")
+    github_url = models.URLField("GitHub", blank=True, default="")
+
     # Оставляем стандартные поля, но переопределяем related_name, чтобы не было ошибок
     groups = models.ManyToManyField(
-        'auth.Group', related_name='custom_user_set', blank=True
+        "auth.Group", related_name="custom_user_set", blank=True
     )
     user_permissions = models.ManyToManyField(
-        'auth.Permission', related_name='custom_user_permission_set', blank=True
+        "auth.Permission", related_name="custom_user_permission_set", blank=True
     )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        return f'{self.name} {self.surname}'
+        return f"{self.name} {self.surname}"
 
 
 class Skill(models.Model):
     """Навык (уникальное название)"""
-    name = models.CharField('Название навыка', max_length=100, unique=True)
+
+    name = models.CharField("Название навыка", max_length=100, unique=True)
 
     class Meta:
-        ordering = ['name']
-        verbose_name = 'Навык'
-        verbose_name_plural = 'Навыки'
+        ordering = ["name"]
+        verbose_name = "Навык"
+        verbose_name_plural = "Навыки"
 
     def __str__(self):
         return self.name
@@ -42,24 +45,20 @@ class Skill(models.Model):
 
 class UserSkill(models.Model):
     """Связь пользователь ↔ навык"""
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='user_skills'
-    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_skills")
     skill = models.ForeignKey(
-        Skill, on_delete=models.CASCADE, related_name='users_with_skill'
+        Skill, on_delete=models.CASCADE, related_name="users_with_skill"
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'skill'],
-                name='unique_user_skill'
-            )
+            models.UniqueConstraint(fields=["user", "skill"], name="unique_user_skill")
         ]
-        ordering = ['-created_at']
-        verbose_name = 'Навык пользователя'
-        verbose_name_plural = 'Навыки пользователей'
+        ordering = ["-created_at"]
+        verbose_name = "Навык пользователя"
+        verbose_name_plural = "Навыки пользователей"
 
     def __str__(self):
-        return f'{self.user} — {self.skill}'
+        return f"{self.user} — {self.skill}"

@@ -116,3 +116,20 @@
     text-decoration: underline;
     color: #666;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding: 1rem;
+}
+.pagination .black-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+.pagination .page-info {
+    color: #666;
+    font-size: 0.9rem;
+}

@@ -6,19 +6,16 @@ from django.views.generic import RedirectView
 from users import views as users_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    
+    path("admin/", admin.site.urls),
     # 🔹 Главная страница перенаправляет на список проектов
-    path('', RedirectView.as_view(url='/projects/', permanent=False)),
-    
+    path("", RedirectView.as_view(url="/projects/", permanent=False)),
     # 🔹 Маршруты аутентификации на корневом уровне
-    path('register/', users_views.register_view, name='register'),
-    path('login/', users_views.login_view, name='login'),
-    path('logout/', users_views.logout_view, name='logout'),
-    
+    path("register/", users_views.register_view, name="register"),
+    path("login/", users_views.login_view, name="login"),
+    path("logout/", users_views.logout_view, name="logout"),
     # 🔹 Подключение приложений
-    path('users/', include('users.urls', namespace='users')),
-    path('projects/', include('projects.urls', namespace='projects')),
+    path("users/", include("users.urls", namespace="users")),
+    path("projects/", include("projects.urls", namespace="projects")),
 ]
 
 if settings.DEBUG:
