@@ -4,18 +4,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 from .forms import ProjectForm
 from .models import Project
 
 
+PROJECT_STATUS_OPEN = 'open'
+PROJECT_STATUS_CLOSED = 'closed'
+PROJECT_STATUS_IN_PROGRESS = 'in_progress'
+
+
+def get_page_object(queryset, request, per_page=12):
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)
+
+
 def project_list_view(request):
     projects = Project.objects.select_related('owner').order_by('-created_at')
-    
-    paginator = Paginator(projects, 12)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
+    page_obj = get_page_object(projects, request)
     return render(request, 'projects/project_list.html', {'page_obj': page_obj})
 
 
@@ -41,7 +49,7 @@ def project_detail(request, project_id):
         Project.objects.select_related("owner").prefetch_related("participants"),
         id=project_id,
     )
-    return render(request, "projects/project_details.html", {"project": project})
+    return render(request, "projects/project_detail.html", {"project": project})
 
 
 @login_required
@@ -60,9 +68,10 @@ def edit_project_view(request, project_id):
 
 
 @login_required
+@require_http_methods(["POST"])
 def complete_project_view(request, project_id):
     project = get_object_or_404(Project, id=project_id, owner=request.user)
-    project.status = "closed"
+    project.status = PROJECT_STATUS_CLOSED
     project.save()
     return JsonResponse({"status": "ok"})
 
