@@ -1,64 +1,85 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.utils.crypto import get_random_string
+from PIL import Image, ImageDraw, ImageFont
+import os
+from django.conf import settings
+import random
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email обязателен')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(
-        "Аватар", upload_to="users/avatars/", blank=True, null=True
-    )
+    username = None
+    email = models.EmailField(unique=True, verbose_name="Email")
+    name = models.CharField(max_length=124, verbose_name="Имя")
+    surname = models.CharField(max_length=124, verbose_name="Фамилия")
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    phone = models.CharField(max_length=12, blank=True)
+    github_url = models.URLField(blank=True)
+    about = models.TextField(max_length=256, blank=True)
 
-    name = models.CharField("Имя", max_length=150, blank=True, default="")
-    surname = models.CharField("Фамилия", max_length=150, blank=True, default="")
-    about = models.TextField("О себе", blank=True, default="")
-    phone = models.CharField("Телефон", max_length=20, blank=True, default="")
-    github_url = models.URLField("GitHub", blank=True, default="")
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'surname']
 
-    # Оставляем стандартные поля, но переопределяем related_name, чтобы не было ошибок
-    groups = models.ManyToManyField(
-        "auth.Group", related_name="custom_user_set", blank=True
-    )
-    user_permissions = models.ManyToManyField(
-        "auth.Permission", related_name="custom_user_permission_set", blank=True
-    )
-
-    class Meta:
-        verbose_name = "Пользователь"
-        verbose_name_plural = "Пользователи"
+    objects = UserManager()
 
     def __str__(self):
         return f"{self.name} {self.surname}"
 
+    def save(self, *args, **kwargs):
+        if not self.avatar:
+            self.generate_default_avatar()
+        super().save(*args, **kwargs)
+
+    def generate_default_avatar(self):
+        first_letter = self.name[0].upper() if self.name else "?"
+        color = random.choice(['#1e88e5', '#43a047', '#f4511e', '#8e24aa'])
+        img = Image.new('RGB', (200, 200), color=color)
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype("arial.ttf", 100)
+        except:
+            font = ImageFont.load_default()
+        bbox = draw.textbbox((0, 0), first_letter, font=font)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+        draw.text(((200 - w)//2, (200 - h)//2), first_letter, fill="white", font=font)
+
+        filename = f"avatar_{get_random_string(12)}.png"
+        path = os.path.join(settings.MEDIA_ROOT, 'avatars', filename)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        img.save(path)
+        self.avatar = f'avatars/{filename}'
+
 
 class Skill(models.Model):
-    """Навык (уникальное название)"""
-
-    name = models.CharField("Название навыка", max_length=100, unique=True)
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name = "Навык"
-        verbose_name_plural = "Навыки"
+    name = models.CharField(max_length=124, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class UserSkill(models.Model):
-    """Связь пользователь ↔ навык"""
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_skills")
-    skill = models.ForeignKey(
-        Skill, on_delete=models.CASCADE, related_name="users_with_skill"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='skills')
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["user", "skill"], name="unique_user_skill")
-        ]
-        ordering = ["-created_at"]
-        verbose_name = "Навык пользователя"
-        verbose_name_plural = "Навыки пользователей"
+        unique_together = ('user', 'skill')
 
     def __str__(self):
-        return f"{self.user} — {self.skill}"
+        return f"{self.user} - {self.skill}"
