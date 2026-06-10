@@ -1,50 +1,43 @@
-Team Finder
+# TeamFinder
+Платформа для поиска команды на pet-проекты (Вар №2)
 
-Описание
-Платформа для поиска команды и управления проектами. Позволяет создавать профили, указывать навыки, публиковать проекты и присоединяться к разработке.
+# О проекте
+Веб-приложение, где разработчики, дизайнеры и другие IT-специалисты могут публиковать идеи проектов и находить участников команды
 
-Требования
-Docker
-Docker Compose
+Реализованный вариант: №2 — Навыки пользователей и фильтрация по навыкам
 
-Запуск
+## Основные возможности
+- Регистрация и авторизация по email
+- Создание, редактирование и завершение проектов
+- Присоединение пользователей к проектам
+- Управление навыками пользователя (добавление/удаление с автодополнением)
+- Фильтрация списка пользователей по выбранному навыку
+- Генерация персонального аватара с первой буквой имени
+- Пагинация (12 элементов на странице)
 
-1. Создайте файл .env в корне проекта со следующим содержимым:
-DJANGO_SECRET_KEY=django-insecure-change-me
-DEBUG=True
-POSTGRES_DB=teamfinder
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
+# Технологии
+- Django 5.2
+- PostgreSQL + Docker
+- JavaScript + AJAX
 
-2. Запустите контейнеры:
-docker compose up --build -d
+# Как запустить
 
-3. Примените миграции:
-docker compose exec web python manage.py migrate
+# 1. Копируем .env
+cp .env_example .env
 
-4. Загрузите тестовые данные:
-docker compose exec web python manage.py loaddata fixtures/skills.json fixtures/users.json fixtures/projects.json fixtures/user_skills.json
+# 2. Запускаем базу данных
+docker compose up -d
 
-5. Установите пароли для тестовых аккаунтов:
-docker compose exec web python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); [u.set_password('password123') or u.save() for u in User.objects.filter(email__in=['alice@test.com', 'bob@test.com', 'carol@test.com'])]"
+# 3. Устанавливаем зависимости
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
-Тестовые аккаунты
-alice@test.com / password123
-bob@test.com / password123
-carol@test.com / password123
+# 4. Миграции
+python manage.py migrate
 
-Администрирование
-Панель управления: /admin/
-Создание администратора:
-docker compose exec web python manage.py createsuperuser
+# 5. Создаём суперпользователя
+python manage.py createsuperuser
 
-Структура проекта
-users/ — профили, навыки, аутентификация
-projects/ — проекты, участники, статусы
-fixtures/ — тестовые данные
-templates/ — HTML-шаблоны
-static/ — CSS, JS, изображения
-docker-compose.yml — конфигурация контейнеров
-Dockerfile — образ приложения
+# 6. Запуск
+python manage.py runserver
